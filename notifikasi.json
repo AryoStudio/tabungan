@@ -1,0 +1,25 @@
+{
+  "notifications": [
+    {
+      "id": 1,
+      "title": "🎉 Selamat Datang!",
+      "message": "Selamat datang di Uangku! Mulai atur keuanganmu sekarang.",
+      "date": "2024-01-01T00:00:00.000Z",
+      "type": "info"
+    },
+    {
+      "id": 2,
+      "title": "💡 Tips Hari Ini",
+      "message": "Menyisihkan 20% dari penghasilan adalah kunci kebebasan finansial.",
+      "date": "2024-01-02T00:00:00.000Z",
+      "type": "tip"
+    },
+    {
+      "id": 3,
+      "title": "🚀 Mulai Menabung",
+      "message": "Buat target tabungan pertamamu dan mulai wujudkan impian!",
+      "date": "2024-01-03T00:00:00.000Z",
+      "type": "info"
+    }
+  ]
+}
