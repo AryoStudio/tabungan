@@ -20,6 +20,13 @@
       "message": "Buat target tabungan pertamamu dan mulai wujudkan impian!",
       "date": "2024-01-03T00:00:00.000Z",
       "type": "info"
+    },
+     {
+      "id": 4,
+      "title": "Hallo",
+      "message": "Saya di buat oleh tuan ARYO",
+      "date": "2026-01-03T00:00:00.000Z",
+      "type": "pemberitahuan"
     }
   ]
 }
