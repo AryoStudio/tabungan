@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-feature-settings: 'ss01', 'ss02', 'cv01', 'cv02', 'tnum'; }
+    h1, h2, h3, h4 { letter-spacing: -0.02em; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    
+    @keyframes slideIn {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(0); }
+    }
+    .progress-animate { animation: slideIn 0.8s ease-out; }
+    
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px -12px rgba(0,0,0,0.15);
+    }
+    
+    .badge-earned {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+    .badge-locked {
+        background: #e5e7eb;
+        color: #9ca3af;
+    }
+    
+    .badge-item {
+        transition: all 0.2s ease;
+    }
+    .badge-item:hover {
+        transform: translateY(-2px);
+    }
+</style>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    "tertiary": "#002618", "surface-container-high": "#e7e8ea",
+                    "secondary": "#006c49", "surface-container-highest": "#e1e2e4",
+                    "surface-container-lowest": "#ffffff", "on-surface-variant": "#43474e",
+                    "secondary-container": "#6cf8bb", "primary": "#002045",
+                    "surface": "#f8f9fb", "on-surface": "#191c1e",
+                    "surface-container-low": "#f3f4f6", "error": "#ba1a1a"
+                },
+                borderRadius: { xl: "0.75rem", "2xl": "1rem", "3xl": "1.5rem" }
+            }
+        }
+    }
+</script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 backdrop-blur-xl flex justify-between items-center px-6 py-4">
+    <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-blue-900">arrow_back</span>
+        </a>
+        <span class="material-symbols-outlined text-blue-900">account_balance_wallet</span>
+        <h1 class="text-xl font-black text-blue-900 tracking-tighter">UangKu.id ( BETA )</h1>
+    </div>
+</header>
+
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+    <div class="bg-gradient-to-br from-primary to-primary-container rounded-3xl p-6 mb-8 text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+        <div class="relative z-10 flex items-center gap-4">
+            <div class="relative group">
+                <div id="profileAvatar" class="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center ring-4 ring-white/30 overflow-hidden cursor-pointer">
+                    <img id="profileImage" src="" class="w-full h-full object-cover hidden">
+                    <span id="profileIcon" class="material-symbols-outlined text-5xl">person</span>
+                </div>
+                <button onclick="changeProfilePhoto()" class="absolute bottom-0 right-0 bg-black/50 rounded-full p-1 hover:bg-black/70 transition-colors">
+                    <span class="material-symbols-outlined text-sm text-white">camera_alt</span>
+                </button>
+                <input type="file" id="photoInput" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+            </div>
+            <div class="flex-1">
+                <h2 class="text-2xl font-black" id="userName">Pengguna UangKu.id ( BETA )</h2>
+                <p class="text-white/80 text-sm mt-1 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">calendar_today</span>
+                    Bergabung sejak <span id="joinDate">2024</span>
+                </p>
+                <div class="mt-2 flex gap-2">
+                    <span class="bg-white/20 px-2 py-0.5 rounded-full text-xs font-bold">⭐ Level <span id="userLevel">1</span></span>
+                    <span class="bg-white/20 px-2 py-0.5 rounded-full text-xs font-bold" id="userStreak">🔥 0 hari streak</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="stat-card bg-surface-container-lowest rounded-2xl p-4 text-center shadow-sm">
+            <span class="material-symbols-outlined text-secondary text-3xl">savings</span>
+            <p class="text-2xl font-black text-primary mt-1" id="statTotal">Rp 0</p>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Total Tabungan</p>
+        </div>
+        <div class="stat-card bg-surface-container-lowest rounded-2xl p-4 text-center shadow-sm">
+            <span class="material-symbols-outlined text-secondary text-3xl">target</span>
+            <p class="text-2xl font-black text-primary mt-1" id="statGoals">0</p>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Target Aktif</p>
+        </div>
+        <div class="stat-card bg-surface-container-lowest rounded-2xl p-4 text-center shadow-sm">
+            <span class="material-symbols-outlined text-secondary text-3xl">receipt_long</span>
+            <p class="text-2xl font-black text-primary mt-1" id="statTransactions">0</p>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Total Transaksi</p>
+        </div>
+        <div class="stat-card bg-surface-container-lowest rounded-2xl p-4 text-center shadow-sm">
+            <span class="material-symbols-outlined text-secondary text-3xl">emoji_events</span>
+            <p class="text-2xl font-black text-primary mt-1" id="statBadges">0</p>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Pencapaian</p>
+        </div>
+    </div>
+
+    <div class="bg-surface-container-low rounded-2xl p-5 mb-8">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-bold text-primary">Progress ke Level <span id="nextLevel">2</span></span>
+            <span class="text-xs font-bold text-secondary" id="levelProgress">0%</span>
+        </div>
+        <div class="h-3 bg-surface-container-high rounded-full overflow-hidden">
+            <div id="levelBar" class="h-full bg-gradient-to-r from-secondary to-emerald-500 rounded-full progress-animate" style="width: 0%;"></div>
+        </div>
+        <p class="text-[10px] text-on-surface-variant mt-2 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">info</span>
+            <span id="levelMessage">Tabung Rp 1.000.000 untuk naik level!</span>
+        </p>
+    </div>
+
+    <div class="mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-black text-primary">🏆 Pencapaian</h3>
+            <span class="text-[10px] font-bold text-secondary uppercase tracking-wider">Koleksi Badge</span>
+        </div>
+        <div class="grid grid-cols-3 sm:grid-cols-5 gap-4" id="badgesContainer"></div>
+    </div>
+
+    <div class="mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-black text-primary">🎯 Ringkasan Target</h3>
+            <a href="target.html" class="text-[10px] font-bold text-secondary uppercase tracking-wider">Lihat Semua →</a>
+        </div>
+        <div id="goalsSummary" class="space-y-3"></div>
+    </div>
+
+    <div class="bg-gradient-to-r from-secondary/10 to-secondary-container/20 rounded-2xl p-5 mb-8 text-center">
+        <span class="material-symbols-outlined text-secondary text-2xl">format_quote</span>
+        <p class="text-primary font-medium italic mt-1" id="quoteText">"Jangan menunggu sempurna untuk memulai, mulailah dari apapun yang kamu punya."</p>
+        <p class="text-[10px] text-on-surface-variant mt-2" id="quoteAuthor">— UangKu.id ( BETA )</p>
+    </div>
+
+    <div class="mb-8">
+        <h3 class="text-lg font-black text-primary mb-4">⚙️ Pengaturan</h3>
+        <div class="bg-surface-container-lowest rounded-2xl divide-y divide-outline-variant/20">
+            <div class="p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-secondary">edit</span>
+                    <div>
+                        <p class="font-bold text-primary text-sm">Nama Pengguna</p>
+                        <p class="text-xs text-on-surface-variant" id="displayName">Pengguna UangKu.id ( BETA )</p>
+                    </div>
+                </div>
+                <button onclick="editName()" class="text-[10px] font-bold text-secondary uppercase tracking-wider">Edit</button>
+            </div>
+            <div class="p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-secondary">delete</span>
+                    <div>
+                        <p class="font-bold text-primary text-sm">Hapus Semua Data</p>
+                        <p class="text-xs text-on-surface-variant">Reset semua tabungan dan target</p>
+                    </div>
+                </div>
+                <button onclick="resetAllData()" class="text-[10px] font-bold text-error uppercase tracking-wider">Reset</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-slate-50/80 backdrop-blur-xl z-50 rounded-t-2xl shadow-[0_-4px_20px_0_rgba(26,54,93,0.04)]">
+    <a href="index.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 transition-colors">
+        <span class="material-symbols-outlined">home</span>
+        <span class="text-[10px] font-black uppercase tracking-[0.1em]">Home</span>
+    </a>
+    <a href="riwayat.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 transition-colors">
+        <span class="material-symbols-outlined">history</span>
+        <span class="text-[10px] font-black uppercase tracking-[0.1em]">History</span>
+    </a>
+    <a href="target.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 transition-colors">
+        <span class="material-symbols-outlined">target</span>
+        <span class="text-[10px] font-black uppercase tracking-[0.1em]">Goals</span>
+    </a>
+    <a href="tambah.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 transition-colors">
+        <span class="material-symbols-outlined">add_circle</span>
+        <span class="text-[10px] font-black uppercase tracking-[0.1em]">Add</span>
+    </a>
+</nav>
+
+<script>
+    let userProfile = {};
+    let transactions = [];
+    let goals = [];
+
+    const badges = [
+        { id: 'first_saving', name: 'Pemula', icon: 'eco', desc: 'Menabung pertama kali', color: 'from-green-500 to-emerald-600' },
+        { id: 'millionaire', name: 'Jutawan', icon: 'attach_money', desc: 'Total tabungan Rp 1.000.000', color: 'from-yellow-500 to-amber-600' },
+        { id: 'five_million', name: 'Pahlawan', icon: 'star', desc: 'Total tabungan Rp 5.000.000', color: 'from-blue-500 to-indigo-600' },
+        { id: 'ten_million', name: 'Legenda', icon: 'emoji_events', desc: 'Total tabungan Rp 10.000.000', color: 'from-purple-500 to-pink-600' },
+        { id: 'goal_master', name: 'Pencapai Target', icon: 'target', desc: 'Mencapai 1 target', color: 'from-red-500 to-rose-600' },
+        { id: 'streak_7', name: 'Konsisten', icon: 'local_fire_department', desc: 'Menabung 7 hari berturut-turut', color: 'from-orange-500 to-red-600' },
+        { id: 'streak_30', name: 'Dedikasi', icon: 'military_tech', desc: 'Menabung 30 hari berturut-turut', color: 'from-teal-500 to-emerald-600' },
+        { id: 'five_goals', name: 'Ambisi', icon: 'flag', desc: 'Membuat 5 target', color: 'from-cyan-500 to-blue-600' },
+        { id: 'perfect', name: 'Sempurna', icon: 'crown', desc: 'Mencapai semua target aktif', color: 'from-amber-500 to-yellow-600' }
+    ];
+
+    const quotes = [
+        { text: "Jangan menunggu sempurna untuk memulai, mulailah dari apapun yang kamu punya.", author: "UangKu.id ( BETA )" },
+        { text: "Kebebasan finansial bukan tentang kaya, tapi tentang punya kendali atas uangmu.", author: "Robert Kiyosaki" },
+        { text: "Jangan menyimpan apa yang tersisa setelah berbelanja, tapi belanjakan apa yang tersisa setelah menabung.", author: "Warren Buffett" },
+        { text: "Kekayaan adalah hasil dari kebiasaan kecil yang konsisten.", author: "UangKu.id ( BETA )" },
+        { text: "Uang yang ditabung lebih berharga daripada uang yang dihabiskan.", author: "Benjamin Franklin" },
+        { text: "Kunci sukses adalah memulai. Kunci untuk memulai adalah mengatasi rasa takut.", author: "Mark Twain" },
+        { text: "Setiap rupiah yang kamu tabung adalah karyawan yang bekerja untukmu.", author: "UangKu.id ( BETA )" }
+    ];
+
+    function formatRupiah(amount) {
+        return new Intl.NumberFormat('id-ID').format(amount);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function getTotalSavings() {
+        if (!Array.isArray(transactions)) return 0;
+        let total = 0;
+        transactions.forEach(t => {
+            if (t && t.type === 'deposit' && typeof t.amount === 'number') {
+                total += t.amount;
+            }
+        });
+        return total;
+    }
+
+    function calculateStreak() {
+        if (!Array.isArray(transactions) || transactions.length === 0) return 0;
+        const depositTransactions = transactions.filter(t => t && t.type === 'deposit' && t.date);
+        if (depositTransactions.length === 0) return 0;
+        const dates = [...new Set(depositTransactions.map(t => t.date))].sort();
+        if (dates.length === 0) return 0;
+        let maxStreak = 1;
+        let currentStreak = 1;
+        for (let i = 1; i < dates.length; i++) {
+            const prevDate = new Date(dates[i-1]);
+            const currDate = new Date(dates[i]);
+            const diffDays = Math.round((currDate - prevDate) / (1000 * 60 * 60 * 24));
+            if (diffDays === 1) {
+                currentStreak++;
+                maxStreak = Math.max(maxStreak, currentStreak);
+            } else if (diffDays > 1) {
+                currentStreak = 1;
+            }
+        }
+        return maxStreak;
+    }
+
+    function calculateLevel(totalSavings) {
+        if (totalSavings < 1000000) return { level: 1, nextThreshold: 1000000, progress: (totalSavings / 1000000) * 100 };
+        if (totalSavings < 5000000) return { level: 2, nextThreshold: 5000000, progress: ((totalSavings - 1000000) / 4000000) * 100 };
+        if (totalSavings < 10000000) return { level: 3, nextThreshold: 10000000, progress: ((totalSavings - 5000000) / 5000000) * 100 };
+        if (totalSavings < 25000000) return { level: 4, nextThreshold: 25000000, progress: ((totalSavings - 10000000) / 15000000) * 100 };
+        return { level: 5, nextThreshold: null, progress: 100 };
+    }
+
+    function getEarnedBadges() {
+        const totalSavings = getTotalSavings();
+        const streak = calculateStreak();
+        const completedGoalsCount = Array.isArray(goals) ? goals.filter(g => g && g.current >= g.target).length : 0;
+        const allGoalsCompleted = Array.isArray(goals) && goals.length > 0 && goals.every(g => g && g.current >= g.target);
+        return badges.filter(badge => {
+            switch(badge.id) {
+                case 'first_saving': return transactions.length > 0;
+                case 'millionaire': return totalSavings >= 1000000;
+                case 'five_million': return totalSavings >= 5000000;
+                case 'ten_million': return totalSavings >= 10000000;
+                case 'goal_master': return completedGoalsCount > 0;
+                case 'streak_7': return streak >= 7;
+                case 'streak_30': return streak >= 30;
+                case 'five_goals': return goals.length >= 5;
+                case 'perfect': return allGoalsCompleted;
+                default: return false;
+            }
+        });
+    }
+
+    function renderBadges() {
+        const container = document.getElementById('badgesContainer');
+        if (!container) return;
+        const earned = getEarnedBadges();
+        const earnedIds = new Set(earned.map(b => b.id));
+        container.innerHTML = badges.map(badge => {
+            const isEarned = earnedIds.has(badge.id);
+            return `
+                <div class="badge-item text-center cursor-pointer" onclick="showBadgeDetail('${badge.name}', '${badge.desc}', ${isEarned})">
+                    <div class="w-14 h-14 mx-auto rounded-full ${isEarned ? `bg-gradient-to-br ${badge.color}` : 'bg-gray-200'} flex items-center justify-center mb-1 shadow-md">
+                        <span class="material-symbols-outlined text-2xl ${isEarned ? 'text-white' : 'text-gray-400'}">${badge.icon}</span>
+                    </div>
+                    <p class="text-[9px] font-bold ${isEarned ? 'text-primary' : 'text-gray-400'}">${badge.name}</p>
+                </div>
+            `;
+        }).join('');
+        document.getElementById('statBadges').innerHTML = earned.length;
+    }
+
+    function renderGoalsSummary() {
+        const container = document.getElementById('goalsSummary');
+        if (!container) return;
+        if (!Array.isArray(goals) || goals.length === 0) {
+            container.innerHTML = `
+                <div class="bg-surface-container-low rounded-xl p-4 text-center">
+                    <span class="material-symbols-outlined text-on-surface-variant/40">target</span>
+                    <p class="text-xs text-on-surface-variant mt-1">Belum ada target. Buat target sekarang!</p>
+                    <a href="target.html" class="inline-block mt-2 text-secondary text-xs font-bold">+ Buat Target</a>
+                </div>
+            `;
+            return;
+        }
+        const validGoals = goals.filter(g => g && typeof g.target === 'number' && typeof g.current === 'number');
+        if (validGoals.length === 0) {
+            container.innerHTML = `<div class="bg-surface-container-low rounded-xl p-4 text-center"><p class="text-xs text-on-surface-variant">Data target tidak valid</p></div>`;
+            return;
+        }
+        container.innerHTML = validGoals.slice(0, 3).map(goal => {
+            const percent = goal.target > 0 ? (goal.current / goal.target) * 100 : 0;
+            return `
+                <div class="bg-surface-container-low rounded-xl p-3">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm font-bold text-primary">${escapeHtml(goal.name) || 'Target'}</span>
+                        <span class="text-xs font-black text-secondary">${Math.floor(percent)}%</span>
+                    </div>
+                    <div class="h-2 bg-surface-container-high rounded-full overflow-hidden">
+                        <div class="h-full bg-secondary rounded-full" style="width: ${Math.min(percent, 100)}%;"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-on-surface-variant mt-1">
+                        <span>Rp ${formatRupiah(goal.current)}</span>
+                        <span>Rp ${formatRupiah(goal.target)}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        if (validGoals.length > 3) {
+            container.innerHTML += `<p class="text-center text-[10px] text-on-surface-variant mt-2">+${validGoals.length - 3} target lainnya</p>`;
+        }
+    }
+
+    function updateProfile() {
+        const totalSavings = getTotalSavings();
+        const streak = calculateStreak();
+        const levelData = calculateLevel(totalSavings);
+        document.getElementById('userName').innerHTML = escapeHtml(userProfile.name || 'Pengguna UangKu.id ( BETA )');
+        document.getElementById('displayName').innerHTML = escapeHtml(userProfile.name || 'Pengguna UangKu.id ( BETA )');
+        document.getElementById('joinDate').innerHTML = userProfile.joinDate || '2024';
+        document.getElementById('userLevel').innerHTML = levelData.level;
+        document.getElementById('userStreak').innerHTML = `🔥 ${streak} hari streak`;
+        document.getElementById('statTotal').innerHTML = `Rp ${formatRupiah(totalSavings)}`;
+        document.getElementById('statGoals').innerHTML = Array.isArray(goals) ? goals.length : 0;
+        document.getElementById('statTransactions').innerHTML = Array.isArray(transactions) ? transactions.length : 0;
+        const levelProgress = Math.floor(levelData.progress);
+        document.getElementById('levelProgress').innerHTML = levelData.nextThreshold ? `${levelProgress}%` : 'MAX';
+        document.getElementById('levelBar').style.width = `${levelData.progress}%`;
+        document.getElementById('nextLevel').innerHTML = levelData.nextThreshold ? levelData.level + 1 : 'MAX';
+        if (levelData.nextThreshold) {
+            const remaining = levelData.nextThreshold - totalSavings;
+            document.getElementById('levelMessage').innerHTML = `Tabung Rp ${formatRupiah(remaining)} lagi untuk naik ke level ${levelData.level + 1}!`;
+        } else {
+            document.getElementById('levelMessage').innerHTML = '✨ Selamat! Kamu sudah mencapai level tertinggi! ✨';
+        }
+    }
+
+    function getRandomQuote() {
+        const today = new Date().toDateString();
+        const lastQuoteDate = localStorage.getItem('last_quote_date');
+        let quoteIndex = parseInt(localStorage.getItem('daily_quote_index'));
+        if (lastQuoteDate !== today || isNaN(quoteIndex)) {
+            quoteIndex = Math.floor(Math.random() * quotes.length);
+            localStorage.setItem('last_quote_date', today);
+            localStorage.setItem('daily_quote_index', quoteIndex);
+        }
+        const quote = quotes[quoteIndex] || quotes[0];
+        document.getElementById('quoteText').innerHTML = `"${quote.text}"`;
+        document.getElementById('quoteAuthor').innerHTML = `— ${quote.author}`;
+    }
+
+    function loadProfilePhoto() {
+        const photoBase64 = localStorage.getItem('ledger_profile_photo');
+        const imgElement = document.getElementById('profileImage');
+        const iconElement = document.getElementById('profileIcon');
+        if (photoBase64 && photoBase64.startsWith('data:image')) {
+            imgElement.src = photoBase64;
+            imgElement.classList.remove('hidden');
+            iconElement.classList.add('hidden');
+        } else {
+            imgElement.classList.add('hidden');
+            iconElement.classList.remove('hidden');
+        }
+    }
+
+    function changeProfilePhoto() {
+        document.getElementById('photoInput').click();
+    }
+
+    function handlePhotoUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const maxSize = 300;
+                if (width > height && width > maxSize) {
+                    height = (height * maxSize) / width;
+                    width = maxSize;
+                } else if (height > maxSize) {
+                    width = (width * maxSize) / height;
+                    height = maxSize;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                const base64 = canvas.toDataURL('image/jpeg', 0.7);
+                localStorage.setItem('ledger_profile_photo', base64);
+                const imgElement = document.getElementById('profileImage');
+                const iconElement = document.getElementById('profileIcon');
+                imgElement.src = base64;
+                imgElement.classList.remove('hidden');
+                iconElement.classList.add('hidden');
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        event.target.value = '';
+    }
+
+    function editName() {
+        const currentName = userProfile.name || 'Pengguna UangKu.id ( BETA )';
+        const newName = prompt('Masukkan nama baru:', currentName);
+        if (newName && newName.trim()) {
+            userProfile.name = newName.trim();
+            localStorage.setItem('ledger_user_profile', JSON.stringify(userProfile));
+            updateProfile();
+            alert('Nama berhasil diubah!');
+        }
+    }
+
+    function resetAllData() {
+        if (confirm('⚠️ PERINGATAN! ⚠️\n\nIni akan menghapus SEMUA data:\n- Semua transaksi\n- Semua target\n- Semua notifikasi\n- Foto profil\n\nData tidak dapat dikembalikan. Yakin ingin melanjutkan?')) {
+            localStorage.clear();
+            alert('Semua data telah dihapus. Halaman akan di-refresh.');
+            window.location.reload();
+        }
+    }
+
+    function showBadgeDetail(name, desc, earned) {
+        if (earned) {
+            alert(`🏆 ${name}\n\n${desc}\n\n✅ Sudah kamu dapatkan! Terus pertahankan!`);
+        } else {
+            alert(`🔒 ${name}\n\n${desc}\n\n❌ Belum tercapai. Terus semangat menabung!`);
+        }
+    }
+
+    function loadData() {
+        const savedProfile = localStorage.getItem('ledger_user_profile');
+        if (savedProfile) {
+            try {
+                userProfile = JSON.parse(savedProfile);
+            } catch(e) { userProfile = {}; }
+        }
+        if (!userProfile.joinDate) {
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+            userProfile.joinDate = formattedDate;
+            userProfile.joinTimestamp = Date.now();
+            localStorage.setItem('ledger_user_profile', JSON.stringify(userProfile));
+        }
+        const savedTransactions = localStorage.getItem('ledger_transactions');
+        if (savedTransactions) {
+            try {
+                transactions = JSON.parse(savedTransactions);
+                if (!Array.isArray(transactions)) transactions = [];
+                transactions = transactions.filter(t => t && typeof t.amount === 'number' && t.type === 'deposit');
+            } catch(e) { transactions = []; }
+        } else {
+            transactions = [];
+        }
+        const savedGoals = localStorage.getItem('ledger_goals');
+        if (savedGoals) {
+            try {
+                goals = JSON.parse(savedGoals);
+                if (!Array.isArray(goals)) goals = [];
+                goals = goals.filter(g => g && typeof g.target === 'number' && typeof g.current === 'number');
+            } catch(e) { goals = []; }
+        } else {
+            goals = [];
+        }
+    }
+
+    function refreshAll() {
+        loadData();
+        loadProfilePhoto();
+        renderBadges();
+        renderGoalsSummary();
+        updateProfile();
+        getRandomQuote();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        refreshAll();
+        window.addEventListener('pageshow', function() {
+            refreshAll();
+        });
+    });
+
+    window.changeProfilePhoto = changeProfilePhoto;
+    window.handlePhotoUpload = handlePhotoUpload;
+    window.editName = editName;
+    window.resetAllData = resetAllData;
+    window.showBadgeDetail = showBadgeDetail;
+</script>
+</body>
+</html>
