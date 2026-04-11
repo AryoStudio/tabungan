@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#002045">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="UangKu.id">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+    body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    
+    @keyframes confetti-fall {
+        0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+    
+    .confetti {
+        position: fixed;
+        z-index: 1000;
+        pointer-events: none;
+        animation: confetti-fall 3s ease-out forwards;
+    }
+    
+    @keyframes celebration-pop {
+        0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+        50% { transform: scale(1.05) rotate(2deg); }
+        100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    
+    .celebration-modal {
+        animation: celebration-pop 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+    }
+    
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(0, 108, 73, 0.4); }
+        50% { box-shadow: 0 0 0 20px rgba(0, 108, 73, 0); }
+    }
+    
+    .completed-badge {
+        animation: pulse-glow 1.5s infinite;
+    }
+    
+    .image-mode-cover {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .image-mode-contain {
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+        background-color: #f3f4f6;
+    }
+    
+    body.dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    body.dark-mode .bg-surface,
+    body.dark-mode .bg-surface-container-lowest,
+    body.dark-mode .bg-surface-container-low,
+    body.dark-mode .bg-slate-50\/80,
+    body.dark-mode .bg-white\/90,
+    body.dark-mode .bg-gradient-to-r,
+    body.dark-mode .bg-gradient-to-br {
+        background-color: #1e1e1e !important;
+        color: #e0e0e0 !important;
+    }
+    body.dark-mode .text-primary,
+    body.dark-mode .text-on-surface-variant,
+    body.dark-mode .text-on-surface,
+    body.dark-mode .text-slate-500 {
+        color: #e0e0e0 !important;
+    }
+    body.dark-mode .text-secondary {
+        color: #4edea3 !important;
+    }
+    body.dark-mode .border-outline-variant\/20 {
+        border-color: #333 !important;
+    }
+    body.dark-mode .bg-emerald-50 {
+        background-color: #1a3a2a !important;
+    }
+    body.dark-mode .text-emerald-600 {
+        color: #4edea3 !important;
+    }
+</style>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    "tertiary": "#002618", "secondary": "#006c49", "primary": "#002045",
+                    "surface": "#f8f9fb", "on-surface": "#191c1e", "surface-container-low": "#f3f4f6",
+                    "surface-container-lowest": "#ffffff", "on-surface-variant": "#43474e",
+                    "secondary-container": "#6cf8bb", "primary-container": "#1a365d"
+                }
+            }
+        }
+    }
+</script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 backdrop-blur-xl flex justify-between items-center px-6 py-4">
+    <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-blue-900">account_balance_wallet</span>
+        <h1 class="text-xl font-bold text-blue-900 tracking-tight">UangKu.id</h1>
+    </div>
+    <a href="akun.html" class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center hover:scale-105 transition-transform ring-2 ring-secondary/30">
+        <span class="material-symbols-outlined text-white text-sm">person</span>
+    </a>
+</header>
+
+<main class="pt-24 px-6 max-w-5xl mx-auto">
+    <section class="mb-12">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <span class="text-secondary font-bold tracking-widest text-[10px] uppercase block mb-2">Target Masa Depan</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-primary tracking-tighter leading-none mb-4">Wujudkan Impian Anda.</h2>
+                <p class="text-on-surface-variant">Tambahkan foto dari galeri untuk memotivasi diri!</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="toggleGlobalImageMode()" id="globalModeBtn" class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">crop</span>
+                    <span id="globalModeText">Mode Cover</span>
+                </button>
+                <button onclick="showAddGoalModal()" class="bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:scale-105 transition-transform">
+                    <span class="material-symbols-outlined">add</span> Tambah Target
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="goalsContainer"></div>
+</main>
+
+<div id="celebrationModal" class="fixed inset-0 bg-black/70 z-[100] hidden items-center justify-center p-4" style="backdrop-filter: blur(4px);">
+    <div class="bg-gradient-to-br from-primary to-primary-container rounded-2xl max-w-md w-full p-8 text-center celebration-modal relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl"></div>
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-secondary/20 rounded-full blur-2xl"></div>
+        
+        <div class="w-24 h-24 mx-auto bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mb-6 shadow-2xl">
+            <span class="material-symbols-outlined text-6xl text-white" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+        </div>
+        
+        <h3 class="text-3xl font-black text-white mb-2" id="celebrationGoalName">🎉 SELAMAT! 🎉</h3>
+        <p class="text-on-primary-container text-lg mb-2">Target Anda Telah Tercapai!</p>
+        <div class="w-20 h-1 bg-yellow-400 mx-auto my-4 rounded-full"></div>
+        <p class="text-white/80 text-sm mb-6" id="celebrationMessage">Impian Anda sekarang menjadi kenyataan! Teruslah berkarya dan raih target berikutnya!</p>
+        
+        <div class="flex gap-3">
+            <button onclick="closeCelebrationModal()" class="flex-1 bg-white/20 text-white py-3 rounded-xl font-bold hover:bg-white/30 transition-all">Tutup</button>
+            <a href="tambah.html" class="flex-1 bg-secondary text-white py-3 rounded-xl font-bold hover:bg-secondary/90 transition-all">+ Target Baru</a>
+        </div>
+        
+        <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-yellow-400/30 rounded-full blur-xl"></div>
+        <div class="absolute -top-4 -right-4 w-16 h-16 bg-pink-400/30 rounded-full blur-xl"></div>
+    </div>
+</div>
+
+<div id="goalModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-surface-container-lowest rounded-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+        <h3 class="text-xl font-bold text-primary mb-4">Buat Target Baru</h3>
+        
+        <input id="goalName" type="text" placeholder="Nama Target (contoh: Liburan Jepang)" class="w-full bg-surface-container-low rounded-lg p-3 mb-3 border-none focus:ring-2 focus:ring-primary">
+        
+        <input id="goalTarget" type="number" placeholder="Target Nominal (Rp)" class="w-full bg-surface-container-low rounded-lg p-3 mb-3 border-none focus:ring-2 focus:ring-primary">
+        
+        <input id="goalCurrent" type="number" placeholder="Sudah Terkumpul (Rp)" class="w-full bg-surface-container-low rounded-lg p-3 mb-3 border-none focus:ring-2 focus:ring-primary" value="0">
+        
+        <div class="mb-4">
+            <label class="text-xs font-bold text-on-surface-variant mb-2 block">Foto Target (opsional)</label>
+            <div class="flex gap-2 mb-3">
+                <label class="flex-1 bg-primary/10 text-primary py-2.5 rounded-lg text-sm font-semibold text-center cursor-pointer hover:bg-primary/20 transition-colors">
+                    <span class="material-symbols-outlined text-sm align-middle">photo_library</span> Pilih dari Galeri
+                    <input type="file" id="imageFileInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                </label>
+                <label class="flex-1 bg-primary/10 text-primary py-2.5 rounded-lg text-sm font-semibold text-center cursor-pointer hover:bg-primary/20 transition-colors">
+                    <span class="material-symbols-outlined text-sm align-middle">photo_camera</span> Ambil Foto
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(event)">
+                </label>
+            </div>
+            <div id="imagePreview" class="w-full h-36 bg-surface-container-low rounded-xl flex flex-col items-center justify-center overflow-hidden border-2 border-dashed border-outline-variant cursor-pointer" onclick="document.getElementById('imageFileInput').click()">
+                <span class="material-symbols-outlined text-3xl text-on-surface-variant/50">add_photo_alternate</span>
+                <span class="text-xs text-on-surface-variant/50 mt-1">Klik atau pilih foto</span>
+            </div>
+        </div>
+        
+        <div class="flex gap-3 mt-2">
+            <button onclick="saveGoal()" class="flex-1 bg-primary text-white py-3 rounded-xl font-bold">Simpan Target</button>
+            <button onclick="closeModal()" class="flex-1 bg-surface-container-high py-3 rounded-xl font-bold">Batal</button>
+        </div>
+    </div>
+</div>
+
+<div id="editImageModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-surface-container-lowest rounded-xl max-w-md w-full p-6">
+        <h3 class="text-xl font-bold text-primary mb-4">Edit Foto Target</h3>
+        <div class="flex gap-2 mb-4">
+            <label class="flex-1 bg-primary/10 text-primary py-2.5 rounded-lg text-sm font-semibold text-center cursor-pointer">
+                Ganti Foto
+                <input type="file" id="editImageInput" accept="image/*" class="hidden" onchange="handleEditImageUpload(event)">
+            </label>
+            <button onclick="removeGoalImage()" class="flex-1 bg-error/10 text-error py-2.5 rounded-lg text-sm font-semibold">
+                Hapus Foto
+            </button>
+        </div>
+        <div id="editImagePreview" class="w-full h-40 bg-surface-container-low rounded-xl flex items-center justify-center overflow-hidden">
+            <span class="material-symbols-outlined text-on-surface-variant/50">image</span>
+        </div>
+        <div class="flex gap-3 mt-4">
+            <button onclick="closeEditModal()" class="flex-1 bg-surface-container-high py-3 rounded-xl font-bold">Tutup</button>
+        </div>
+    </div>
+</div>
+
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-slate-50/80 backdrop-blur-xl z-50 rounded-t-2xl shadow-[0_-4px_20px_0_rgba(26,54,93,0.04)]">
+    <a href="index.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 hover:bg-slate-100 rounded-xl transition-all duration-200">
+        <span class="material-symbols-outlined">home</span>
+        <span class="text-[10px] uppercase font-bold">Home</span>
+    </a>
+    
+    <a href="info.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 hover:bg-slate-100 rounded-xl transition-all duration-200">
+        <span class="material-symbols-outlined">info</span>
+        <span class="text-[10px] uppercase font-bold">Info</span>
+    </a>
+    
+    <a href="target.html" class="flex flex-col items-center justify-center text-emerald-600 bg-emerald-50 rounded-xl px-4 py-1 transition-all duration-200">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">target</span>
+        <span class="text-[10px] uppercase font-bold">Goals</span>
+    </a>
+    
+    <a href="todo.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 hover:bg-slate-100 rounded-xl transition-all duration-200">
+        <span class="material-symbols-outlined">checklist</span>
+        <span class="text-[10px] uppercase font-bold">Tasks</span>
+    </a>
+    
+    <a href="tambah.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 hover:bg-slate-100 rounded-xl transition-all duration-200">
+        <span class="material-symbols-outlined">add_circle</span>
+        <span class="text-[10px] uppercase font-bold">Add</span>
+    </a>
+</nav>
+
+<script>
+    let currentEditIndex = null;
+    let tempImageBase64 = null;
+    let alreadyCelebrated = {};
+    let globalImageMode = localStorage.getItem('ledger_image_mode') || 'cover';
+    let currentCurrency = localStorage.getItem('currency') || 'IDR';
+
+    function formatCurrency(amount) {
+        if (currentCurrency === 'IDR') {
+            return new Intl.NumberFormat('id-ID').format(amount);
+        } else if (currentCurrency === 'USD') {
+            const usd = amount / 15500;
+            return new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(usd);
+        } else if (currentCurrency === 'SGD') {
+            const sgd = amount / 11500;
+            return new Intl.NumberFormat('en-SG', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(sgd);
+        } else if (currentCurrency === 'MYR') {
+            const myr = amount / 3500;
+            return new Intl.NumberFormat('ms-MY', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(myr);
+        }
+        return new Intl.NumberFormat('id-ID').format(amount);
+    }
+
+    function getCurrencySymbol() {
+        if (currentCurrency === 'IDR') return 'Rp';
+        if (currentCurrency === 'USD') return '$';
+        if (currentCurrency === 'SGD') return 'S$';
+        if (currentCurrency === 'MYR') return 'RM';
+        return 'Rp';
+    }
+
+    function loadCurrencySettings() {
+        const saved = localStorage.getItem('currency');
+        if (saved) {
+            currentCurrency = saved;
+        }
+    }
+
+    function loadDarkMode() {
+        const darkMode = localStorage.getItem('darkMode');
+        if (darkMode === 'enabled') {
+            document.body.classList.add('dark-mode');
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function toggleGlobalImageMode() {
+        if (globalImageMode === 'cover') {
+            globalImageMode = 'contain';
+            document.getElementById('globalModeText').innerText = 'Mode Contain';
+            document.getElementById('globalModeBtn').className = 'bg-secondary text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1';
+        } else {
+            globalImageMode = 'cover';
+            document.getElementById('globalModeText').innerText = 'Mode Cover';
+            document.getElementById('globalModeBtn').className = 'bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1';
+        }
+        localStorage.setItem('ledger_image_mode', globalImageMode);
+        loadGoals();
+    }
+    
+    function getImageModeClass() {
+        return globalImageMode === 'cover' ? 'image-mode-cover' : 'image-mode-contain';
+    }
+    
+    function launchConfetti() {
+        const colors = ['#006c49', '#002045', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#ec4899'];
+        
+        for (let i = 0; i < 150; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.width = Math.random() * 10 + 5 + 'px';
+            confetti.style.height = Math.random() * 10 + 5 + 'px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => { confetti.remove(); }, 3000);
+        }
+    }
+    
+    function showCelebration(goalName, targetAmount) {
+        const modal = document.getElementById('celebrationModal');
+        const messageEl = document.getElementById('celebrationMessage');
+        
+        messageEl.innerHTML = `Target "${escapeHtml(goalName)}" Anda sebesar ${getCurrencySymbol()} ${formatCurrency(targetAmount)} telah tercapai! 🏆 Impian Anda sekarang menjadi kenyataan!`;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        launchConfetti();
+        setTimeout(() => launchConfetti(), 500);
+        setTimeout(() => launchConfetti(), 1000);
+        
+        setTimeout(() => {
+            closeCelebrationModal();
+        }, 8000);
+    }
+    
+    function closeCelebrationModal() {
+        const modal = document.getElementById('celebrationModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+    
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const maxSize = 800;
+        
+                if (width > height && width > maxSize) {
+                    height = (height * maxSize) / width;
+                    width = maxSize;
+                } else if (height > maxSize) {
+                    width = (width * maxSize) / height;
+                    height = maxSize;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                const base64 = canvas.toDataURL('image/jpeg', 0.7);
+                tempImageBase64 = base64;
+                
+                const previewDiv = document.getElementById('imagePreview');
+                previewDiv.innerHTML = `<img src="${base64}" class="w-full h-full object-contain">`;
+                previewDiv.classList.remove('flex-col', 'justify-center');
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        event.target.value = '';
+    }
+    
+    function handleEditImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const maxSize = 800;
+                
+                if (width > height && width > maxSize) {
+                    height = (height * maxSize) / width;
+                    width = maxSize;
+                } else if (height > maxSize) {
+                    width = (width * maxSize) / height;
+                    height = maxSize;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                const base64 = canvas.toDataURL('image/jpeg', 0.7);
+                
+                let goals = JSON.parse(localStorage.getItem('ledger_goals') || '[]');
+                if (goals[currentEditIndex]) {
+                    goals[currentEditIndex].imageBase64 = base64;
+                    localStorage.setItem('ledger_goals', JSON.stringify(goals));
+                }
+                
+                closeEditModal();
+                loadGoals();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        event.target.value = '';
+    }
+    
+    function removeGoalImage() {
+        let goals = JSON.parse(localStorage.getItem('ledger_goals') || '[]');
+        if (goals[currentEditIndex]) {
+            delete goals[currentEditIndex].imageBase64;
+            localStorage.setItem('ledger_goals', JSON.stringify(goals));
+        }
+        closeEditModal();
+        loadGoals();
+    }
+    
+    function checkAndNotifyCompletion(goalsList) {
+        goalsList.forEach((goal, index) => {
+            if (goal.current >= goal.target && !alreadyCelebrated[index]) {
+                alreadyCelebrated[index] = true;
+                showCelebration(goal.name, goal.target);
+            } else if (goal.current < goal.target) {
+                alreadyCelebrated[index] = false;
+            }
+        });
+    }
+    
+    function loadGoals() {
+        let goals = JSON.parse(localStorage.getItem('ledger_goals') || '[]');
+        if (!Array.isArray(goals)) goals = [];
+        
+        let container = document.getElementById('goalsContainer');
+        const imageModeClass = getImageModeClass();
+        
+        if(goals.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center py-12"><span class="material-symbols-outlined text-6xl text-on-surface-variant">target</span><p class="mt-4 text-on-surface-variant">Belum ada target. Klik "Tambah Target" untuk memulai!</p></div>';
+            return;
+        }
+        
+        container.innerHTML = goals.map((goal, index) => {
+            let percent = goal.target > 0 ? (goal.current / goal.target) * 100 : 0;
+            let hasImage = goal.imageBase64;
+            let isCompleted = percent >= 100;
+            
+            return `
+                <div class="bg-surface-container-lowest rounded-xl overflow-hidden group hover:translate-y-[-4px] transition-transform duration-300 shadow-sm hover:shadow-md ${isCompleted ? 'ring-2 ring-secondary ring-offset-2' : ''}">
+                    <div class="relative h-44 w-full overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10 image-container">
+                        ${hasImage ? 
+                            `<img src="${goal.imageBase64}" class="w-full h-full ${imageModeClass} group-hover:scale-105 transition-transform duration-500">` :
+                            `<div class="w-full h-full flex flex-col items-center justify-center text-on-surface-variant/40">
+                                <span class="material-symbols-outlined text-5xl">photo_camera</span>
+                                <span class="text-xs mt-1">Belum ada foto</span>
+                            </div>`
+                        }
+                        ${isCompleted ? `
+                            <div class="absolute top-3 left-3 bg-gradient-to-r from-secondary to-emerald-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg completed-badge flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+                                TARGET TERCAPAI! 🏆
+                            </div>
+                        ` : ''}
+                        <button onclick="openEditImageModal(${index})" 
+                                class="absolute bottom-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="material-symbols-outlined text-sm">${hasImage ? 'edit' : 'add_a_photo'}</span>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-primary">${escapeHtml(goal.name)} ${isCompleted ? '✓' : ''}</h3>
+                            <button onclick="deleteGoal(${index})" class="text-error/50 hover:text-error transition-colors">
+                                <span class="material-symbols-outlined text-xl">delete</span>
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="text-xs font-bold text-on-surface-variant">${getCurrencySymbol()} ${formatCurrency(goal.current)} / ${getCurrencySymbol()} ${formatCurrency(goal.target)}</span>
+                            <span class="text-lg font-extrabold ${isCompleted ? 'text-secondary' : 'text-primary'}">${Math.min(Math.floor(percent), 100)}%</span>
+                        </div>
+                        <div class="w-full h-2 bg-secondary-container rounded-full overflow-hidden mb-4">
+                            <div class="h-full ${isCompleted ? 'bg-gradient-to-r from-secondary to-emerald-500' : 'bg-secondary'} rounded-full transition-all duration-500" style="width: ${Math.min(percent, 100)}%;"></div>
+                        </div>
+                        <a href="tambah.html" class="block text-center ${isCompleted ? 'bg-secondary/20 text-secondary' : 'bg-primary/10 text-primary'} py-2 rounded-lg text-sm font-semibold hover:bg-primary/20 transition-colors">
+                            ${isCompleted ? '🏆 Target Tercapai! 🏆' : '+ Tambah Tabungan'}
+                        </a>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        checkAndNotifyCompletion(goals);
+    }
+    
+    function showAddGoalModal() {
+        tempImageBase64 = null;
+        document.getElementById('goalModal').classList.add('flex');
+        document.getElementById('goalModal').classList.remove('hidden');
+        document.getElementById('goalName').value = '';
+        document.getElementById('goalTarget').value = '';
+        document.getElementById('goalCurrent').value = '0';
+        
+        const previewDiv = document.getElementById('imagePreview');
+        previewDiv.innerHTML = `
+            <span class="material-symbols-outlined text-3xl text-on-surface-variant/50">add_photo_alternate</span>
+            <span class="text-xs text-on-surface-variant/50 mt-1">Klik atau pilih foto</span>
+        `;
+        previewDiv.classList.add('flex-col', 'justify-center');
+    }
+    
+    function closeModal() {
+        document.getElementById('goalModal').classList.add('hidden');
+        document.getElementById('goalModal').classList.remove('flex');
+        tempImageBase64 = null;
+    }
+    
+    function saveGoal() {
+        let name = document.getElementById('goalName').value;
+        let target = parseInt(document.getElementById('goalTarget').value);
+        let current = parseInt(document.getElementById('goalCurrent').value) || 0;
+        
+        if(!name || !target || target <= 0) {
+            alert('Isi nama dan target nominal dengan benar!');
+            return;
+        }
+        
+        let goals = JSON.parse(localStorage.getItem('ledger_goals') || '[]');
+        if (!Array.isArray(goals)) goals = [];
+        
+        let newGoal = { 
+            name: name, 
+            target: target, 
+            current: current
+        };
+        
+        if (tempImageBase64) {
+            newGoal.imageBase64 = tempImageBase64;
+        }
+        
+        goals.push(newGoal);
+        localStorage.setItem('ledger_goals', JSON.stringify(goals));
+        
+        closeModal();
+        loadGoals();
+        alert('Target berhasil ditambahkan! 🎯');
+    }
+    
+    function deleteGoal(index) {
+        if(confirm('Hapus target ini?')) {
+            let goals = JSON.parse(localStorage.getItem('ledger_goals') || '[]');
+            if (!Array.isArray(goals)) goals = [];
+            goals.splice(index, 1);
+            localStorage.setItem('ledger_goals', JSON.stringify(goals));
+            loadGoals();
+        }
+    }
+    
+    function openEditImageModal(index) {
+        currentEditIndex = index;
+        let goals = JSON.parse(localStorage.getItem('ledger_goals') || '[]');
+        let goal = goals[index];
+        
+        const previewDiv = document.getElementById('editImagePreview');
+        if(goal && goal.imageBase64) {
+            previewDiv.innerHTML = `<img src="${goal.imageBase64}" class="w-full h-full object-contain">`;
+        } else {
+            previewDiv.innerHTML = `
+                <div class="flex flex-col items-center justify-center text-on-surface-variant/50">
+                    <span class="material-symbols-outlined text-4xl">photo_camera</span>
+                    <span class="text-xs mt-1">Belum ada foto</span>
+                </div>
+            `;
+        }
+        
+        document.getElementById('editImageModal').classList.add('flex');
+        document.getElementById('editImageModal').classList.remove('hidden');
+    }
+    
+    function closeEditModal() {
+        document.getElementById('editImageModal').classList.add('hidden');
+        document.getElementById('editImageModal').classList.remove('flex');
+        currentEditIndex = null;
+    }
+    
+    loadCurrencySettings();
+    loadDarkMode();
+    
+    if (globalImageMode === 'contain') {
+        document.getElementById('globalModeText').innerText = 'Mode Contain';
+        document.getElementById('globalModeBtn').className = 'bg-secondary text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1';
+    } else {
+        document.getElementById('globalModeText').innerText = 'Mode Cover';
+        document.getElementById('globalModeBtn').className = 'bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1';
+    }
+    
+    loadGoals();
+    
+    window.showAddGoalModal = showAddGoalModal;
+    window.saveGoal = saveGoal;
+    window.closeModal = closeModal;
+    window.deleteGoal = deleteGoal;
+    window.openEditImageModal = openEditImageModal;
+    window.closeEditModal = closeEditModal;
+    window.handleImageUpload = handleImageUpload;
+    window.handleEditImageUpload = handleEditImageUpload;
+    window.removeGoalImage = removeGoalImage;
+    window.closeCelebrationModal = closeCelebrationModal;
+    window.toggleGlobalImageMode = toggleGlobalImageMode;
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                    registration.update();
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                const notification = confirm('Versi baru UangKu.id tersedia! Muat ulang untuk update?');
+                                if (notification) {
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        });
+    }
+    
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('App is running in standalone mode (installed)');
+        document.body.classList.add('pwa-installed');
+    }
+</script>
+</body>
+</html>
