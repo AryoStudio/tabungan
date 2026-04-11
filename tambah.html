@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    ::-webkit-scrollbar { width: 0px; }
+</style>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    "tertiary": "#002618", "surface-container-high": "#e7e8ea",
+                    "secondary": "#006c49", "primary": "#002045",
+                    "surface": "#f8f9fb", "on-surface": "#191c1e",
+                    "surface-container-low": "#f3f4f6", "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#43474e", "secondary-container": "#6cf8bb",
+                    "primary-container": "#1a365d", "on-primary": "#ffffff",
+                    "error": "#ba1a1a", "error-container": "#ffdad6",
+                    "on-error-container": "#93000a"
+                },
+                borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" }
+            }
+        }
+    }
+</script>
+</head>
+<body class="bg-surface text-on-surface">
+
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 backdrop-blur-xl flex justify-between items-center px-6 py-4">
+    <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-blue-900">arrow_back</span>
+        </a>
+        <span class="material-symbols-outlined text-blue-900">account_balance_wallet</span>
+        <h1 class="text-xl font-bold text-blue-900 tracking-tight">UangKu.id ( BETA )</h1>
+    </div>
+    <a href="akun.html" class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center hover:scale-105 transition-transform ring-2 ring-secondary/30">
+        <span class="material-symbols-outlined text-white text-sm">person</span>
+    </a>
+</header>
+
+<main class="pt-24 pb-32 px-6 max-w-lg mx-auto">
+    <div class="mb-10">
+        <h2 class="text-4xl font-extrabold text-primary tracking-tighter leading-none mb-2">Tambah Tabungan</h2>
+        <p class="text-on-surface-variant text-sm tracking-wide">Setiap rupiah yang Anda simpan adalah langkah menuju masa depan.</p>
+    </div>
+
+    <div class="space-y-8">
+        <div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm">
+            <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-4 block">NOMINAL TABUNGAN</label>
+            <div class="flex items-baseline gap-2">
+                <span class="text-2xl font-bold text-primary opacity-50">Rp</span>
+                <input id="amountInput" type="number" class="w-full bg-transparent border-none p-0 text-5xl font-extrabold text-primary placeholder:text-surface-container-high focus:ring-0 tracking-tighter" placeholder="0" value="0">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6">
+            <div class="bg-surface-container-low p-6 rounded-xl">
+                <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-3 block">PILIH TARGET</label>
+                <select id="goalSelect" class="w-full bg-surface-container-lowest border-none rounded-lg p-4 text-primary font-semibold appearance-none focus:ring-2 focus:ring-primary/5 cursor-pointer">
+                    <option value="none">Tanpa Target (Tabungan Bebas)</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-surface-container-low p-6 rounded-xl">
+                    <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-3 block">TANGGAL</label>
+                    <input id="dateInput" type="date" class="w-full bg-surface-container-lowest border-none rounded-lg p-4 text-primary font-semibold focus:ring-2 focus:ring-primary/5">
+                </div>
+                <div class="bg-tertiary-container/10 p-6 rounded-xl border border-tertiary-container/5 relative overflow-hidden">
+                    <label class="text-[10px] uppercase tracking-widest font-bold text-on-tertiary-container mb-3 block">KATEGORI</label>
+                    <select id="categorySelect" class="w-full bg-transparent border-none text-sm font-bold text-tertiary focus:ring-0">
+                        <option>Tabungan Reguler</option>
+                        <option>Dana Darurat</option>
+                        <option>Investasi</option>
+                        <option>Liburan</option>
+                        <option>Pendidikan</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low p-6 rounded-xl">
+                <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-3 block">CATATAN</label>
+                <textarea id="noteInput" class="w-full bg-surface-container-lowest border-none rounded-lg p-4 text-primary placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/5" placeholder="Tulis catatan singkat di sini..." rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <button onclick="saveTransaction()" class="w-full py-5 px-8 rounded-xl bg-gradient-to-br from-primary to-primary-container text-white font-bold text-lg shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 group">
+                <span>Simpan Tabungan</span>
+                <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+            </button>
+        </div>
+    </div>
+</main>
+
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-slate-50/80 backdrop-blur-xl z-50 rounded-t-2xl shadow-[0_-4px_20px_0_rgba(26,54,93,0.04)]">
+    <!-- HOME -->
+    <a href="index.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 hover:bg-slate-100 rounded-xl transition-all duration-200">
+        <span class="material-symbols-outlined">home</span>
+        <span class="text-[10px] font-black uppercase tracking-[0.1em]">Home</span>
+    </a>
+    
+    <!-- INFO -->
+    <a href="info.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 hover:bg-slate-100 rounded-xl transition-all duration-200">
+        <span class="material-symbols-outlined">info</span>
+        <span class="text-[10px] font-black uppercase tracking-[0.1em]">Info</span>
+    </a>
+    
+    <!-- GOALS -->
+    <a href="target.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 hover:bg-slate-100 rounded-xl transition-all duration-200">
+        <span class="material-symbols-outlined">target</span>
+        <span class="text-[10px] font-black uppercase tracking-[0.1em]">Goals</span>
+    </a>
+    
+    <!-- TASKS -->
+    <a href="todo.html" class="flex flex-col items-center justify-center text-slate-400 px-4 py-1 hover:text-blue-900 hover:bg-slate-100 rounded-xl transition-all duration-200">
+        <span class="material-symbols-outlined">checklist</span>
+        <span class="text-[10px] font-black uppercase tracking-[0.1em]">Tasks</span>
+    </a>
+    
+    <!-- ADD (AKTIF) -->
+    <a href="tambah.html" class="flex flex-col items-center justify-center text-emerald-600 bg-emerald-50 rounded-xl px-4 py-1 transition-all duration-200">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+        <span class="text-[10px] font-black uppercase tracking-[0.1em]">Add</span>
+    </a>
+</nav>
+
+<script>
+    let goals = [];
+    let transactions = [];
+    
+    function formatRupiah(amount) {
+        return new Intl.NumberFormat('id-ID').format(amount);
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function updateGoalsDropdown() {
+        let select = document.getElementById('goalSelect');
+        let currentGoals = JSON.parse(localStorage.getItem('ledger_goals') || '[]');
+        if (!Array.isArray(currentGoals)) currentGoals = [];
+        
+        select.innerHTML = '<option value="none">Tanpa Target (Tabungan Bebas)</option>';
+        currentGoals.forEach((goal, index) => {
+            if (goal && typeof goal.target === 'number' && typeof goal.current === 'number') {
+                select.innerHTML += `<option value="${index}">${escapeHtml(goal.name)} (Rp ${formatRupiah(goal.current)} / ${formatRupiah(goal.target)})</option>`;
+            }
+        });
+    }
+    
+    function loadData() {
+        goals = JSON.parse(localStorage.getItem('ledger_goals') || '[]');
+        transactions = JSON.parse(localStorage.getItem('ledger_transactions') || '[]');
+        if (!Array.isArray(goals)) goals = [];
+        if (!Array.isArray(transactions)) transactions = [];
+    }
+    
+    function saveTransaction() {
+        let amount = parseInt(document.getElementById('amountInput').value) || 0;
+        if (amount <= 0) {
+            alert('Masukkan nominal tabungan yang valid!');
+            return;
+        }
+        
+        let goalIndex = document.getElementById('goalSelect').value;
+        let date = document.getElementById('dateInput').value;
+        let category = document.getElementById('categorySelect').value;
+        let note = document.getElementById('noteInput').value;
+        
+        if (!date) {
+            date = new Date().toISOString().split('T')[0];
+        }
+        
+        let transaction = {
+            id: Date.now(),
+            amount: amount,
+            type: 'deposit',
+            category: category,
+            note: note,
+            date: date,
+            goalIndex: goalIndex !== 'none' ? parseInt(goalIndex) : null
+        };
+        
+        transactions.push(transaction);
+        localStorage.setItem('ledger_transactions', JSON.stringify(transactions));
+        
+        if (goalIndex !== 'none') {
+            let goalsData = JSON.parse(localStorage.getItem('ledger_goals') || '[]');
+            if (goalsData[parseInt(goalIndex)] && typeof goalsData[parseInt(goalIndex)].current === 'number') {
+                goalsData[parseInt(goalIndex)].current += amount;
+                localStorage.setItem('ledger_goals', JSON.stringify(goalsData));
+            }
+        }
+        
+        alert('Tabungan berhasil disimpan! 🎉');
+        document.getElementById('amountInput').value = '0';
+        document.getElementById('noteInput').value = '';
+        
+        updateGoalsDropdown();
+        
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 500);
+    }
+    
+    document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+    loadData();
+    updateGoalsDropdown();
+    
+    window.saveTransaction = saveTransaction;
+</script>
+</body>
+</html>
