@@ -3,7 +3,7 @@
     {
       "id": 1,
       "title": "🎉 Selamat Datang!",
-      "message": "Selamat datang di The Ledger! Mulai atur keuanganmu sekarang.",
+      "message": "Selamat datang di UangKu.id ( BETA )! Mulai atur keuanganmu sekarang.",
       "date": "2024-01-01T00:00:00.000Z",
       "type": "info"
     },
@@ -24,7 +24,7 @@
     {
       "id": 4,
       "title": "👨‍💻 Tentang Developer",
-      "message": "The Ledger dibuat oleh Aryo Pratama. Terima kasih telah menggunakan aplikasi ini!",
+      "message": "UangKu.id ( BETA ) dibuat oleh Aryo Pratama. Terima kasih telah menggunakan aplikasi ini!",
       "date": "2026-01-03T00:00:00.000Z",
       "type": "info"
     },
@@ -38,7 +38,7 @@
     {
       "id": 6,
       "title": "⚠️ Perubahan Versi",
-      "message": "The Ledger telah diperbarui ke versi 2.0.0! Jika ada data yang hilang, mohon maaf. Kami sarankan untuk mengisi ulang target dan tabungan Anda. Tim pengembang terus berkomitmen memberikan pengalaman terbaik.",
+      "message": "UangKu.id ( BETA ) telah diperbarui ke versi 2.0.0! Jika ada data yang hilang, mohon maaf. Kami sarankan untuk mengisi ulang target dan tabungan Anda. Tim pengembang terus berkomitmen memberikan pengalaman terbaik.",
       "date": "2026-04-11T00:00:00.000Z",
       "type": "warning"
     },
